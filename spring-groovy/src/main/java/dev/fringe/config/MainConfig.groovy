@@ -3,6 +3,7 @@ package dev.fringe.config;
 import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.hibernate.SessionFactory
 import org.mybatis.spring.*;
 import org.mybatis.spring.annotation.*;
 import org.springframework.beans.factory.annotation.*;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.*;
 import org.springframework.core.io.ClassPathResource
 import org.springframework.jdbc.datasource.init.DataSourceInitializer
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator
+import org.springframework.orm.hibernate5.HibernateTransactionManager
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean
 import org.springframework.transaction.annotation.*;
 
@@ -20,6 +22,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @MapperScan(basePackages = 'dev.fringe.persistence')
 @PropertySource('classpath:database.properties')
 @EnableTransactionManagement
+@ComponentScan( basePackages = ['dev.fringe.service','dev.fringe.dao'])
 public class MainConfig {
 
     @Value('${db.driverClassName}')
@@ -64,14 +67,32 @@ public class MainConfig {
 	    return i;
 	}
 	@Bean
-	public LocalSessionFactoryBean localSessionFactoryBean() {
+	public LocalSessionFactoryBean getSessionFactory() {
 		LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
 		localSessionFactoryBean.setDataSource(dataSource());
 		localSessionFactoryBean.setPackagesToScan("dev.fringe.model");
 		Properties properties = new Properties();
 		properties.put("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
-		properties.put("hibernate.hbm2ddl.auto", "create");
+		properties.put("hibernate.hbm2ddl.auto", "update");
 		localSessionFactoryBean.setHibernateProperties(properties);
 		return localSessionFactoryBean;
 	}
+	
+	@Bean(name = "transactionManager")
+	@Autowired
+	public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
+		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+		transactionManager.setSessionFactory(sessionFactory);
+		return transactionManager;
+	}
+	
+//	@Bean(name = "transactionManager")
+//	public PlatformTransactionManager transactionManager() {
+//		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+//		transactionManager.setDataSource(dataSource()); 
+//		transactionManager.setSessionFactory(localSessionFactoryBean().getObject()); 
+//		transactionManager.setHibernateManagedSession(false); 
+//		return transactionManager; 
+//	}
+
 }
