@@ -7,7 +7,11 @@ import dev.fringe.model.MainModel
 public interface MainMapper {
 
 	@Select('''
+<<<<<<< HEAD
 			select *
+=======
+			select distinct(#{model}) as test 
+>>>>>>> branch 'master' of https://github.com/dev-fringe/spring-groovy.git
 			  from public.sample
             
 		''')
