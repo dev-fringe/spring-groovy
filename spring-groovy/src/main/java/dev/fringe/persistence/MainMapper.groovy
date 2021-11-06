@@ -7,7 +7,7 @@ import dev.fringe.model.MainModel
 public interface MainMapper {
 
 	@Select('''
-			select distinct(#{model}) as test 
+			select *
 			  from public.sample
             
 		''')
