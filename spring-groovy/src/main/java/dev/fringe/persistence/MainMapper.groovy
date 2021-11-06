@@ -9,7 +9,6 @@ public interface MainMapper {
 	@Select('''
 			select *
 			  from public.sample
-            
 		''')
 	public List<Map> select(MainModel main);
 }

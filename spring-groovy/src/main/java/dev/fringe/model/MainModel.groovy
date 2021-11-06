@@ -11,6 +11,7 @@ class MainModel {
 	private String model
 	private String type
 	
+
 	public String toString() {
 		return "Car [model=" + model + ", type=" + type + "]";
 	}
