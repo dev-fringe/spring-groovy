@@ -4,16 +4,22 @@ import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.hibernate.SessionFactory
-import org.mybatis.spring.*;
-import org.mybatis.spring.annotation.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.context.annotation.*;
+import org.mybatis.spring.SqlSessionFactoryBean
+import org.mybatis.spring.SqlSessionTemplate
+import org.mybatis.spring.annotation.MapperScan
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.PropertySource
 import org.springframework.core.io.ClassPathResource
 import org.springframework.jdbc.datasource.init.DataSourceInitializer
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator
 import org.springframework.orm.hibernate5.HibernateTransactionManager
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean
-import org.springframework.transaction.annotation.*;
+import org.springframework.transaction.annotation.EnableTransactionManagement
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -68,31 +74,22 @@ public class MainConfig {
 	}
 	@Bean
 	public LocalSessionFactoryBean getSessionFactory() {
-		LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
-		localSessionFactoryBean.setDataSource(dataSource());
-		localSessionFactoryBean.setPackagesToScan("dev.fringe.model");
-		Properties properties = new Properties();
-		properties.put("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
-		properties.put("hibernate.hbm2ddl.auto", "update");
-		localSessionFactoryBean.setHibernateProperties(properties);
-		return localSessionFactoryBean;
+		LocalSessionFactoryBean l = new LocalSessionFactoryBean();
+		l.setDataSource(dataSource());
+		l.setPackagesToScan("dev.fringe.model");
+		Properties p = new Properties();
+		p.put("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
+		p.put("hibernate.hbm2ddl.auto", "update");
+		l.setHibernateProperties(p);
+		return l;
 	}
 	
 	@Bean(name = "transactionManager")
 	@Autowired
-	public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
-		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-		transactionManager.setSessionFactory(sessionFactory);
-		return transactionManager;
+	public HibernateTransactionManager transactionManager(SessionFactory s) {
+		HibernateTransactionManager t = new HibernateTransactionManager();
+		t.setSessionFactory(s);
+		return t;
 	}
-	
-//	@Bean(name = "transactionManager")
-//	public PlatformTransactionManager transactionManager() {
-//		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-//		transactionManager.setDataSource(dataSource()); 
-//		transactionManager.setSessionFactory(localSessionFactoryBean().getObject()); 
-//		transactionManager.setHibernateManagedSession(false); 
-//		return transactionManager; 
-//	}
 
 }

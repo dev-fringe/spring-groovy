@@ -1,7 +1,10 @@
 package dev.fringe
-import org.springframework.beans.factory.*
-import org.springframework.beans.factory.annotation.*
-import org.springframework.context.annotation.*
+
+import org.springframework.beans.factory.InitializingBean
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.AnnotationConfigApplicationContext
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 
 import dev.fringe.config.MainConfig
 import dev.fringe.model.MainModel
@@ -19,6 +22,6 @@ class Main implements InitializingBean {
 	}
 
 	void afterPropertiesSet() throws Exception {
-		mainService.save(new MainModel(model: '26', type: 'sdsd'))
+		mainService.save(new MainModel(model: '28', type: 'sdsd'))
 	}
 }
